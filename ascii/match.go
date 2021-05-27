@@ -2,12 +2,14 @@
 
 package ascii
 
+//IsAlpha : check is letters
 //go:nosplit
 func IsAlpha(ch uint8) bool {
 	t := (ch | ('A' ^ 'a')) - 'a'
 	return t <= 'z'-'a'
 }
 
+//ToLower letters to lower
 //go:nosplit
 func ToLower(ch uint8) uint8 {
 
@@ -26,16 +28,16 @@ func min(a, b int) int {
 	return b
 }
 
-//CaseCMP: a < b => -1; a > b => 1; a == b => 0
+//CaseCMP : return int; a < b => -1; a > b => 1; a == b => 0
 func CaseCMP(a, b string) int {
 	size := min(len(a), len(b))
 	for i := 0; i < size; i++ {
-		lower_char_a := ToLower(a[i])
-		lower_char_b := ToLower(b[i])
-		if lower_char_a == lower_char_b {
+		lowerCharA := ToLower(a[i])
+		lowerCharB := ToLower(b[i])
+		if lowerCharA == lowerCharB {
 			continue
 		}
-		if lower_char_b < lower_char_a {
+		if lowerCharB < lowerCharA {
 			return 1
 		}
 		return -1
@@ -49,6 +51,7 @@ func CaseCMP(a, b string) int {
 	return 1
 }
 
+//SubString : subs from begin, len = size
 //go:nosplit
 func SubString(str string, begin, size int) string {
 	if len(str) <= begin {
@@ -56,6 +59,19 @@ func SubString(str string, begin, size int) string {
 	}
 	return str[begin:min(len(str), begin+size)]
 }
+
+//StrRChr search charter from right
+//go:nosplit
+func StrRChr(str string, ch uint8) int {
+	for offset := len(str); offset > 0; offset-- {
+		if str[offset-1] == ch {
+			return offset - 1
+		}
+	}
+	return -1
+}
+
+//FindString : binary search by casecmp
 func FindString(array []string, target string) int {
 	Range := len(array)
 	begin := 0
