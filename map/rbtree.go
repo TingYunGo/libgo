@@ -124,14 +124,14 @@ func (t *TreeNode) Next() *TreeNode {
 
 // RbTree is Red/Black tree
 type RbTree struct {
-	less func(a, b interface{}) bool
-	Root *TreeNode
+	compaire func(a, b interface{}) int
+	Root     *TreeNode
 }
 
 // Init is struct initializer
-func (rbt *RbTree) Init(less func(a, b interface{}) bool) *RbTree {
+func (rbt *RbTree) Init(compaire func(a, b interface{}) int) *RbTree {
 	rbt.Root = nil
-	rbt.less = less
+	rbt.compaire = compaire
 	return rbt
 }
 
@@ -415,20 +415,20 @@ func (rbt *RbTree) Find(key interface{}) (isParent bool, r *TreeNode) {
 	node := rbt.Root
 	if node != nil {
 		for {
-			if rbt.less(key, node.value.first) {
+			cmp := rbt.compaire(key, node.value.first)
+			if cmp == 0 {
+				return false, node
+			}
+			if cmp < 0 {
 				if node.Left == nil {
 					break
-				} else {
-					node = node.Left
 				}
-			} else if rbt.less(node.value.first, key) {
+				node = node.Left
+			} else {
 				if node.Right == nil {
 					break
-				} else {
-					node = node.Right
 				}
-			} else {
-				return false, node
+				node = node.Right
 			}
 		}
 	}
@@ -449,7 +449,7 @@ func (rbt *RbTree) Insert(parent, node *TreeNode) {
 	if parent == nil {
 		rbt.Root = node
 	} else {
-		if rbt.less(node.value.first, parent.value.first) {
+		if rbt.compaire(node.value.first, parent.value.first) < 0 {
 			parent.Left = node
 		} else {
 			parent.Right = node

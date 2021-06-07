@@ -49,8 +49,13 @@ func (m *Map) Size() uint64 {
 }
 
 // Init is the map constructor
-func (m *Map) Init(less func(a, b interface{}) bool) *Map {
-	m._Tree.Init(less)
+// compaire:
+//         if a < b :=>    ret < 0
+//         if a > b :=>    ret > 0
+//         if a == b :=>   ret = 0
+
+func (m *Map) Init(compaire func(a, b interface{}) int) *Map {
+	m._Tree.Init(compaire)
 	m._Size = 0
 	return m
 }
